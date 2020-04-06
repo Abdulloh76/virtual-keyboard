@@ -33,6 +33,10 @@ textarea {
 .key:hover {
     background-color: #20b2a2;
 }
+.key:active {
+    border-radius: 20px;
+    background-color: #b8860b;
+}
 .active {
     border-radius: 20px;
     background-color: #b8860b;

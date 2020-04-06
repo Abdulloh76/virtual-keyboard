@@ -22,11 +22,11 @@ let engKeys = [
 let rusKeys = [
 [['ё', 'Ё'], ['1', '!'], ['2', '"'], ['3', '№'], ['4', ';'], ['5', '%'], ['6', ':'], ['7', '?'], ['8', '*'], ['9', '('], ['0', ')'], ['-', '_'], ['=', '+'], ['backspace', 'backspace']],
     
-[['Tab', 'Tab'], ['й', 'Й'], ['ц', 'Ц'], ['у', 'У'], ['к', 'К'], ['е', 'Е'], ['н', 'Н'], ['г', 'Г'], ['ш', 'Ш'], ['щ', 'Щ'], ['з', 'З'], ['х', 'Х'], ['ъ', 'Ъ'], ['\\', '/'], ['del', 'del']],
+[['tab', 'tab'], ['й', 'Й'], ['ц', 'Ц'], ['у', 'У'], ['к', 'К'], ['е', 'Е'], ['н', 'Н'], ['г', 'Г'], ['ш', 'Ш'], ['щ', 'Щ'], ['з', 'З'], ['х', 'Х'], ['ъ', 'Ъ'], ['\\', '/'], ['del', 'del']],
     
-[['CapsLock', 'CapsLock'], ['ф', 'Ф'], ['ы', 'Ы'], ['в', 'В'], ['а', 'А'], ['п', 'П'], ['р', 'Р'], ['о', 'О'], ['л', 'Л'], ['д', 'Д'], ['ж', 'Ж'], ['э', 'Э'], ['Enter', 'Enter']],
+[['caps-lock', 'caps-lock'], ['ф', 'Ф'], ['ы', 'Ы'], ['в', 'В'], ['а', 'А'], ['п', 'П'], ['р', 'Р'], ['о', 'О'], ['л', 'Л'], ['д', 'Д'], ['ж', 'Ж'], ['э', 'Э'], ['enter', 'enter']],
     
-[['Shift', 'Shift'], ['я', 'Я'], ['ч', 'Ч'], ['с', 'С'], ['м', 'М'], ['и', 'И'], ['т', 'Т'], ['ь', 'Ь'], ['б', 'Б'], ['ю', 'Ю'], ['.', ','], ['▲', '▲'], ['Shift', 'Shift']],
+[['shift', 'shift'], ['я', 'Я'], ['ч', 'Ч'], ['с', 'С'], ['м', 'М'], ['и', 'И'], ['т', 'Т'], ['ь', 'Ь'], ['б', 'Б'], ['ю', 'Ю'], ['.', ','], ['▲', '▲'], ['shift', 'shift']],
     
 [['ctrl', 'ctrl'], ['win', 'win'], ['alt', 'alt'], ['space', 'space'], ['alt', 'alt'], ['◄', '◄'], ['▼', '▼'], ['►', '►'], ['ctrl', 'ctrl']]
 ]
@@ -43,6 +43,7 @@ let keyCodes=[
 ['ControlLeft', 'MetaLeft', 'AltLeft', 'Space', 'AltRight', 'ArrowLeft', 'ArrowDown', 'ArrowRight', 'ControlRight']
 ];
 
+
 for (let i=0; i<keyCodes.length; i++) {
     keyboard.insertAdjacentHTML('beforeEnd', '<div class="keyboard-row"></div>'); 
     let keyRow=document.querySelectorAll('.keyboard-row');
@@ -50,16 +51,91 @@ for (let i=0; i<keyCodes.length; i++) {
     for (let j=0; j<keyCodes[i].length; j++) {
         keyRow[keyRow.length-1].insertAdjacentHTML('beforeEnd', 
             `<div class="key ${keyCodes[i][j]}"> 
-                <span class="eng "> 
+                <span class="eng hidden"> 
                     <span class="lower">${engKeys[i][j][0]}</span>
                     <span class="upper hidden">${engKeys[i][j][1]}</span>
                 </span> 
-                <span class="rus hidden"> 
-                    <span class="lower hidden">${rusKeys[i][j][0]}</span>
+                <span class="rus "> 
+                    <span class="lower ">${rusKeys[i][j][0]}</span>
                     <span class="upper hidden">${rusKeys[i][j][1]}</span>
                 </span> 
             </div>`
         );
     }
 }
+
+let str='';
+ 
+function caseChanging() {
+    document.querySelectorAll('.key').forEach(el => {
+        if(!el.querySelector('.eng').classList.contains('hidden')) {
+            if(!el.querySelectorAll('.eng>span')[0].classList.contains('hidden')) {
+                el.querySelectorAll('.eng>span')[0].classList.add('hidden');
+                el.querySelectorAll('.eng>span')[1].classList.remove('hidden');
+            }
+            else {
+                el.querySelectorAll('.eng>span')[1].classList.add('hidden');
+                el.querySelectorAll('.eng>span')[0].classList.remove('hidden');
+            }
+        }
+        else {
+            if(!el.querySelectorAll('.rus>span')[0].classList.contains('hidden')) {
+                el.querySelectorAll('.rus>span')[0].classList.add('hidden');
+                el.querySelectorAll('.rus>span')[1].classList.remove('hidden');
+            }
+            else {
+                el.querySelectorAll('.rus>span')[1].classList.add('hidden');
+                el.querySelectorAll('.rus>span')[0].classList.remove('hidden');
+            }
+        }
+    });
+}
+
+function functionalKeys(key) {
+
+    switch(key.classList[1]) {
+        case 'Backspace': 
+            str=str.replace(str[str.length-1], '');
+            break;
+        case 'Tab':
+            str+='\t';
+            break;
+        case 'CapsLock':
+            caseChanging();
+            key.classList.toggle('active');
+            break;
+        case 'Enter':
+            str+='\n';
+            break;
+        case 'Space':
+            str+=' ';
+            break;
+        case 'ShiftRight': case 'ShiftLeft':
+            caseChanging();
+            break;
+
+    }
+}
+
+
+keyboard.addEventListener('mousedown', (event) => {
+    console.log(event.target.closest('.key'))
+    if(event.target.innerText.length>2) {
+        functionalKeys(event.target.closest('.key'));
+    }
+
+    else {
+        str += event.target.innerText;
+    }
+    
+    
+});
+keyboard.addEventListener('mouseup', (event) => {
+    if (event.target.closest('.key').innerText=='shift') {
+        caseChanging();
+    }
+});
+
+document.onclick = () =>  input.value=str; 
+
 
