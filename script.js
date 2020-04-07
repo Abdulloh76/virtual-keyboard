@@ -41,12 +41,12 @@ for (let i = 0; i < keyCodes.length; i += 1) {
   for (let j = 0; j < keyCodes[i].length; j += 1) {
     keyRow[keyRow.length - 1].insertAdjacentHTML('beforeEnd',
       `<div class="key ${keyCodes[i][j]}"> 
-          <span class="eng hidden"> 
+          <span class="eng"> 
               <span class="lower">${engKeys[i][j][0]}</span>
               <span class="upper hidden">${engKeys[i][j][1]}</span>
           </span> 
-          <span class="rus "> 
-              <span class="lower ">${rusKeys[i][j][0]}</span>
+          <span class="rus hidden"> 
+              <span class="lower hidden">${rusKeys[i][j][0]}</span>
               <span class="upper hidden">${rusKeys[i][j][1]}</span>
           </span> 
         </div>`);
@@ -110,6 +110,7 @@ function functionalKeys(key) {
       str += '\t';
       break;
     case 'CapsLock':
+      if (pressed.includes('CapsLock')) break;
       key.classList.toggle('active');
       caseChanging();
       break;
@@ -124,10 +125,14 @@ function functionalKeys(key) {
       caseChanging();
       break;
     case 'ControlLeft': case 'ControlRight':
-      if (pressed.includes('Alt')) langChanging();
+      if (pressed.includes('Alt')) {
+        langChanging();
+      }
       break;
     case 'AltLeft': case 'AltRight':
-      if (pressed.includes('Control')) langChanging();
+      if (pressed.includes('Control')) {
+        langChanging();
+      }
       break;
     default:
   }
@@ -166,16 +171,16 @@ document.addEventListener('keydown', (event) => {
   }
 });
 document.addEventListener('keyup', (event) => {
-  if (event.key === 'CapsLock') return;
-  if (event.key === 'Shift') {
-    caseChanging();
-  }
-  document.querySelector(`.${event.code}`).classList.remove('active');
   for (let i = 0; i < pressed.length; i += 1) {
     if (pressed[i] === event.key) {
       pressed.splice(i, 1);
     }
   }
+  if (event.key === 'CapsLock') return;
+  if (event.key === 'Shift') {
+    caseChanging();
+  }
+  document.querySelector(`.${event.code}`).classList.remove('active');
 });
 
 document.onclick = () => {
