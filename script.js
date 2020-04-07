@@ -75,6 +75,7 @@ function caseChanging() {
   });
 }
 
+
 function langChanging() {
   document.querySelectorAll('.key').forEach((el) => {
     if (!el.querySelector('.eng').classList.contains('hidden')) {
@@ -100,6 +101,7 @@ function langChanging() {
     }
   });
 }
+
 const pressed = [];
 function functionalKeys(key) {
   switch (key.classList[1]) {
@@ -182,6 +184,7 @@ document.addEventListener('keyup', (event) => {
   }
   document.querySelector(`.${event.code}`).classList.remove('active');
 });
+
 
 document.onclick = () => {
   input.value = str;
